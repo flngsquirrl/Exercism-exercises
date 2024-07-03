@@ -1,3 +1,5 @@
+// tests taken from exercism.org
+
 import { find } from '../src/binary-search';
 
 describe('Binary Search', () => {
