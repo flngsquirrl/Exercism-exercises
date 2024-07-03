@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsc --watch",
     "lint": "eslint src",
-    "test": "jest"
+    "test": "jest test/**.ts"
   },
   "author": "",
   "license": "ISC",
