@@ -1,17 +1,11 @@
-const NON_WORD_CHARACTERS = /[^a-zA-Z\d']+/g;
-const FALSE_CONTRACTION = / '|' |^'|'$/g;
-const SEPARATOR = ' ';
+const WORD_REGEX = /\b(?:\w+'?\w+|\w+)\b/gi;
 
 export function count(input: string): Map<string, number> {
-  const normalized = input
-    .replace(NON_WORD_CHARACTERS, SEPARATOR)
-    .replace(FALSE_CONTRACTION, SEPARATOR)
-    .trim()
-    .toLowerCase();
   const map: Map<string, number> = new Map();
-  normalized.split(SEPARATOR).forEach(word => {
-    const count = map.get(word) ?? 0;
-    map.set(word, count + 1);
+  input.match(WORD_REGEX)?.forEach(word => {
+    const lowerCased = word.toLowerCase();
+    const count = map.get(lowerCased) ?? 0;
+    map.set(lowerCased, count + 1);
   });
   return map;
 }
