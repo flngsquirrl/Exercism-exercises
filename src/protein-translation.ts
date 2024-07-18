@@ -32,19 +32,27 @@ const TRANSLATION_CODONS = [
 ] as const;
 type TranslationCodon = (typeof TRANSLATION_CODONS)[number];
 
-const PROTEIN_CODONS: Map<Protein, TranslationCodon[]> = new Map([
-  ['Methionine', ['AUG']],
-  ['Phenylalanine', ['UUU', 'UUC']],
-  ['Leucine', ['UUA', 'UUG']],
-  ['Serine', ['UCU', 'UCC', 'UCA', 'UCG']],
-  ['Tyrosine', ['UAU', 'UAC']],
-  ['Cysteine', ['UGU', 'UGC']],
-  ['Tryptophan', ['UGG']]
-]);
+type ProteinTranslationCodon = {
+  [protein in Protein]: TranslationCodon[];
+};
 
-const CODON_PROTEINS = new Map<TranslationCodon, Protein>();
-[...PROTEIN_CODONS.entries()].forEach(([protein, codons]) => {
-  codons.forEach(codon => CODON_PROTEINS.set(codon, protein));
+const PROTEIN_CODONS: ProteinTranslationCodon = {
+  Methionine: ['AUG'],
+  Phenylalanine: ['UUU', 'UUC'],
+  Leucine: ['UUA', 'UUG'],
+  Serine: ['UCU', 'UCC', 'UCA', 'UCG'],
+  Tyrosine: ['UAU', 'UAC'],
+  Cysteine: ['UGU', 'UGC'],
+  Tryptophan: ['UGG']
+};
+
+type TranslationCodonProtein = {
+  [codon in TranslationCodon]: Protein;
+};
+
+const CODON_PROTEINS: Partial<TranslationCodonProtein> = {};
+Object.entries(PROTEIN_CODONS).forEach(([protein, codons]) => {
+  codons.forEach(codon => (CODON_PROTEINS[codon] = protein as Protein));
 });
 
 function isTranslationCodon(value: string): value is TranslationCodon {
@@ -59,7 +67,7 @@ export function translate(sequence: string) {
       break;
     }
     if (isTranslationCodon(codon)) {
-      const protein = CODON_PROTEINS.get(codon);
+      const protein = CODON_PROTEINS[codon];
       resultProteins.push(protein);
     } else {
       throw new Error('Invalid codon.');
